@@ -1,3 +1,34 @@
+<!--
+This file will overwrite /etc/shibboleth/shibboleth2.xml in the container.
+
+To configure your Shibboleth SP:
+
+1. Change the <ApplicationDefaults> entityID to the entityID of your registered SP.
+
+Then, IF your SP is an InCommon SP and you want to use the InCommon Discovery
+Service and the InCommon Metadata Service:
+
+2. Download the InCommon medatada signing certificate and save as mdqsigner.pem:
+   $ curl https://md.incommon.org/certs/inc-md-cert-mdq.pem > mdqsigner.pem
+3. Check the fingerprints:
+   $ cat mdqsigner.pem | openssl x509 -sha1 -noout -fingerprint
+   $ cat mdqsigner.pem | openssl x509 -sha256 -noout -fingerprint
+   The results should match the fingerprints listed here.
+   https://spaces.at.internet2.edu/display/MDQ/production+metadata+signing+key
+   If they do, you are done.
+
+        (Note for March 2021: The signing certificate url above may change.
+        https://spaces.at.internet2.edu/display/MDQ/migrate-to-mdq
+        The doc above says to migrate to use the "new" md endpoints, which
+        it links, but the linked docs still list "md.incommon.org"... which is
+        supposed to be the legacy service. Anyway, check back in March 2021.)
+
+Otherwise, if you wish to use a different non-InCommon-aggregate setup,
+edit the Shibboleth config below accordingly, and remove the sections
+marked as InCommon related.
+
+-->
+
 <SPConfig xmlns="urn:mace:shibboleth:3.0:native:sp:config"
     xmlns:conf="urn:mace:shibboleth:3.0:native:sp:config"
     clockSkew="180">
@@ -31,8 +62,16 @@
             entityID property and adjust discoveryURL to point to discovery service.
             You can also override entityID on /Login query string, or in RequestMap/htaccess.
             -->
+            <!--If you do not want to use the InCommon Discovery Service, then edit
+                and uncomment the block below (and remove the InCommon block that follows)-->
+            <!--
             <SSO entityID="https://idp.example.org/idp/shibboleth"
                  discoveryProtocol="SAMLDS" discoveryURL="https://ds.example.org/DS/WAYF">
+              SAML2
+            </SSO>
+            -->
+            <!--Otherwise, for InCommon Discovery Service, just leave this as is-->
+            <SSO discoveryProtocol="SAMLDS" discoveryURL="https://wayf.incommonfederation.org/DS/WAYF">
               SAML2
             </SSO>
 
@@ -63,6 +102,15 @@
         <Errors supportContact="root@localhost"
             helpLocation="/about.html"
             styleSheet="/shibboleth-sp/main.css"/>
+
+        <!--For use of the InCommon Metadata Service-->
+        <!--To configure a different md provider, comment out the following block and write
+            your own MetadataProvider block according to one of the examples below it-->
+        <MetadataProvider type="MDQ" validate="true" cacheDirectory="mdq"
+                baseUrl="https://mdq.incommon.org/" ignoreTransport="true">
+            <MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/>
+            <MetadataFilter type="Signature" certificate="mdqsigner.pem" />
+        </MetadataProvider>
 
         <!-- Example of locally maintained metadata. -->
         <!--
