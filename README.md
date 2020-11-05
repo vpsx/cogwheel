@@ -32,12 +32,30 @@ Save these in the top level directory with the following names:
 `sp-encrypt-cert.pem`, `sp-encrypt-key.pem`, `sp-signing-cert.pem`,
 `sp-signing-key.pem`.
 
+If you are setting up something other than InCommon, still save the SP's
+signing and encryption keys/certs with those names.
+
 -----------------------------------------------------------------------
 
 ## Setup and configuration
 
 As described above, make sure you have saved your SP's signing/encryption certs
 and keys with the correct names in the top level directory.
+
+Then, IF your SP is an InCommon SP and you want to use the InCommon Metadata
+Service (if you don't know, assume that the answer is yes):
+
+- Download the InCommon medatada signing certificate and save it as mdqsigner.pem:
+  `curl https://md.incommon.org/certs/inc-md-cert-mdq.pem > mdqsigner.pem`
+- Check the fingerprints:
+  `cat mdqsigner.pem | openssl x509 -sha1 -noout -fingerprint`
+  `cat mdqsigner.pem | openssl x509 -sha256 -noout -fingerprint`
+  The results should match the fingerprints listed [here](https://spaces.at.internet2.edu/display/MDQ/production+metadata+signing+key).
+
+        (Note for March 2021: The signing certificate url above [may change](https://spaces.at.internet2.edu/display/MDQ/migrate-to-mdq).
+        The doc above says to migrate to use the "new" md endpoints, which
+        it links, but the linked docs still list "md.incommon.org"... which is
+        supposed to be the legacy service. Anyway, check back in March 2021.)
 
 Then, make a copy of `template.ssl.conf` and save it as `ssl.conf`; edit it
 according to the instructions in its header comment.

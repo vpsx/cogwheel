@@ -5,31 +5,15 @@ You should edit it according to the instructions below and save a copy
 named shibboleth2.xml.
 
 To configure your Shibboleth SP:
+- Change the <ApplicationDefaults> entityID to the entityID of your registered SP.
 
-1. Change the <ApplicationDefaults> entityID to the entityID of your registered SP.
+IF your SP is an InCommon SP and you want to use the InCommon Discovery
+Service and the InCommon Metadata Service, then that's it! You are done.
 
-Then, IF your SP is an InCommon SP and you want to use the InCommon Discovery
-Service and the InCommon Metadata Service:
-
-2. Download the InCommon medatada signing certificate and save as mdqsigner.pem:
-   $ curl https://md.incommon.org/certs/inc-md-cert-mdq.pem > mdqsigner.pem
-3. Check the fingerprints:
-   $ cat mdqsigner.pem | openssl x509 -sha1 -noout -fingerprint
-   $ cat mdqsigner.pem | openssl x509 -sha256 -noout -fingerprint
-   The results should match the fingerprints listed here.
-   https://spaces.at.internet2.edu/display/MDQ/production+metadata+signing+key
-   If they do, you are done.
-
-        (Note for March 2021: The signing certificate url above may change.
-        https://spaces.at.internet2.edu/display/MDQ/migrate-to-mdq
-        The doc above says to migrate to use the "new" md endpoints, which
-        it links, but the linked docs still list "md.incommon.org"... which is
-        supposed to be the legacy service. Anyway, check back in March 2021.)
-
-Otherwise, if you wish to use a different non-InCommon-aggregate setup,
-edit the Shibboleth config below accordingly, and remove the sections
-marked as InCommon related.
-
+Otherwise, if you wish to use a different non-InCommon setup,
+or you wish to use InCommon but without the discovery or metadata services,
+then edit the Shibboleth config below accordingly. If necessary, remove the
+sections marked as InCommon related.
 -->
 
 <SPConfig xmlns="urn:mace:shibboleth:3.0:native:sp:config"
