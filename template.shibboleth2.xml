@@ -1,6 +1,9 @@
 <!--
 This file will overwrite /etc/shibboleth/shibboleth2.xml in the container.
 
+You should edit it according to the instructions below and save a copy
+named shibboleth2.xml.
+
 To configure your Shibboleth SP:
 
 1. Change the <ApplicationDefaults> entityID to the entityID of your registered SP.
