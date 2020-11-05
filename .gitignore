@@ -1,3 +1,7 @@
 shibboleth2.xml
 ssl.conf
 mdqsigner.pem
+sp-encrypt-cert.pem
+sp-encrypt-key.pem
+sp-signing-cert.pem
+sp-signing-key.pem
