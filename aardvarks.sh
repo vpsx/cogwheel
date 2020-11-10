@@ -16,3 +16,6 @@ logs () {
 shell () {
     docker exec -it cixiri bash
 }
+poke () {
+    docker exec -w /var/www/wsgi/wsgi-scripts cixiri touch app.wsgi
+}
