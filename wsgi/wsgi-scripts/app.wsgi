@@ -1,10 +1,5 @@
+## Put the application files on the python load path:
+import sys
+sys.path.insert(0, '/var/www/wsgi/src')
 
-def application(environ, start_response):
-    status = '200 OK'
-    output = b'Hello World! I am a WSGI app.'
-
-    response_headers = [('Content-type', 'text/plain'),
-                        ('Content-Length', str(len(output)))]
-    start_response(status, response_headers)
-
-    return [output]
+from main import app as application

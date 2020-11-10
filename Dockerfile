@@ -47,6 +47,9 @@ RUN pip3 install mod_wsgi
 # https://pypi.org/project/mod-wsgi/
 RUN mod_wsgi-express install-module
 
+# Install Poetry
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
+
 # Copy the wsgi app, which contains all the OIDC code
 COPY ./wsgi /var/www/wsgi
 
@@ -61,3 +64,12 @@ COPY ./wsgi /var/www/wsgi
 #     I am probably just confused. Will investigate when the time comes.
 COPY wsgi_virtual_host.conf /tmp/wsgi_virtual_host.conf
 RUN cat /tmp/wsgi_virtual_host.conf >> /etc/httpd/conf/httpd.conf && rm /tmp/wsgi_virtual_host.conf
+
+WORKDIR /var/www/wsgi
+RUN . $HOME/.poetry/env \
+    # Create virtualenv in /var/www/wsgi/.venv
+    # It's not important where the venv is; this just makes it explicit and obvious.
+    # If you change this, you should change python-home in the WSGIDaemonProcess directive
+    # of the WSGI virtualhost def.
+    && poetry config virtualenvs.in-project true \
+    && poetry install
