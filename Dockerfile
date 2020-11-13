@@ -54,16 +54,11 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
 COPY ./wsgi /var/www/wsgi
 
 
-# Append WSGI VirtualHost config to main Apache config file.
+# Append additional config to main Apache config file.
 # This seemed like the simplest and dumbest method; therefore, do switch to `Include`
-# directives if it becomes sensible to do so. With one caveat:
-#   - mod_wsgi docs say that the WSGIScriptAlias directive "can only appear in the main
-#     Apache configuration files", but the Apache docs say that any directive can be in any file.
-#     - https://httpd.apache.org/docs/2.4/configuring.html
-#     - https://modwsgi.readthedocs.io/en/develop/user-guides/quick-configuration-guide.html#mounting-the-wsgi-application
-#     I am probably just confused. Will investigate when the time comes.
-COPY wsgi_virtual_host.conf /tmp/wsgi_virtual_host.conf
-RUN cat /tmp/wsgi_virtual_host.conf >> /etc/httpd/conf/httpd.conf && rm /tmp/wsgi_virtual_host.conf
+# directives if it becomes sensible to do so.
+COPY append_httpd.conf /tmp/append_httpd.conf
+RUN cat /tmp/append_httpd.conf >> /etc/httpd/conf/httpd.conf && rm /tmp/append_httpd.conf
 
 WORKDIR /var/www/wsgi
 RUN . $HOME/.poetry/env \
