@@ -187,15 +187,16 @@ server.register_grant(AuthorizationCodeGrant)
 from flask import request, render_template
 #from your_project.auth import current_user
 
-def get_or_create_shib_user():
+def get_or_create_shib_user(dbsession):
     if request.remote_user:
-        with session_scope() as session:
-            user = session.query(User).filter(User.shib_id == request.remote_user).one_or_none()
-            if not user:
-                new_user = User(shib_id=request.remote_user)
-                session.add(new_user)
-                session.commit()
-                user = new_user
+
+        user = dbsession.query(User).filter(User.shib_id == request.remote_user).one_or_none()
+        if not user:
+            new_user = User(shib_id=request.remote_user)
+            dbsession.add(new_user)
+            dbsession.commit()
+            user = new_user
+
         return user
     return "No value for request.remote_user--is this being called outside a request context?"
 
@@ -206,23 +207,26 @@ def authorize():
     # It can be done with a redirection to the login page, or a login
     # form on this authorization page.
 
-    # What happens if current_user is just a string?
-    #current_user = "Lactobacillus bulgaricus"
-    current_user = get_or_create_shib_user()
+    with session_scope() as s:
 
-    if request.method == 'GET':
-        grant = server.validate_consent_request(end_user=current_user)
-        return render_template(
-            'authorize.html',
-            grant=grant,
-            user=current_user,
-        )
-    confirmed = request.form['confirm']
-    if confirmed:
-        # granted by resource owner
-        return server.create_authorization_response(grant_user=current_user)
-    # denied by resource owner
-    return server.create_authorization_response(grant_user=None)
+        # What happens if current_user is just a string?
+        #current_user = "Lactobacillus bulgaricus"
+        #current_user = get_or_create_shib_user()
+        current_user = get_or_create_shib_user(s)
+
+        if request.method == 'GET':
+            grant = server.validate_consent_request(end_user=current_user)
+            return render_template(
+                'authorize.html',
+                grant=grant,
+                user=current_user,
+            )
+        confirmed = request.form['confirm']
+        if confirmed:
+            # granted by resource owner
+            return server.create_authorization_response(grant_user=current_user)
+        # denied by resource owner
+        return server.create_authorization_response(grant_user=None)
 
 @app.route('/oauth/token', methods=['POST'])
 def issue_token():
