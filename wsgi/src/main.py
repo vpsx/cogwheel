@@ -21,6 +21,12 @@ def apache():
     return "REMOTE_USER is..... " + request.remote_user
 
 
+@app.route('/breakpoint')
+def breakpoint():
+    import pdb; pdb.set_trace()
+    return "Debugger weeee"
+
+
 from flask_sqlalchemy import SQLAlchemy
 # SQLite and in-memory for now...
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'

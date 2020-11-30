@@ -60,6 +60,10 @@ COPY ./wsgi /var/www/wsgi
 COPY append_httpd.conf /tmp/append_httpd.conf
 RUN cat /tmp/append_httpd.conf >> /etc/httpd/conf/httpd.conf && rm /tmp/append_httpd.conf
 
+# Append additional config to supervisord config file.
+COPY append_supervisord.conf /tmp/append_supervisord.conf
+RUN cat /tmp/append_supervisord.conf >> /etc/supervisor/supervisord.conf && rm /tmp/append_supervisord.conf
+
 WORKDIR /var/www/wsgi
 RUN . $HOME/.poetry/env \
     # Create virtualenv in /var/www/wsgi/.venv

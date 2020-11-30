@@ -64,3 +64,30 @@ Make a copy of `template.shibboleth2.xml` and save it as `shibboleth2.xml`;
 edit it according to the instructions in its header comment.
 
 -----------------------------------------------------------------------
+
+## Interactive debugging
+
+You can set up the server such as to enable the use of pdb, but it is a rather
+involved process. See [here](https://modwsgi.readthedocs.io/en/develop/user-guides/debugging-techniques.html#python-interactive-debugger) for background information on the steps below.
+
+1. In your `ssl.conf` in the VirtualHost definition, comment out both the
+   WSGIDaemonProcess directive and the WSGIProcessGroup directive.
+1. In `append_httpd.conf` uncomment the section "FOR ENABLING INTERACTIVE
+   DEBUGGER".
+1. In `append_supervisord.conf` uncomment the section "FOR ENABLING INTERACTIVE
+   DEBUGGER". If you like you can also uncomment the section "FOR ENABLING
+   SUPERVISORCTL", but this is not essential.
+1. In `wsgi/wsgi-scripts/app.wsgi` uncomment the section "FOR ENABLING
+   INTERACTIVE DEBUGGER".
+
+
+Now you can edit the Python code and add your breakpoints. Rebuild and restart
+your container. Then before doing anything else, start up a shell in the
+container and:
+1. Kill the server, `httpd -k stop`
+1. Restart the server, `httpd -X`
+This is just so that now you have a way to write to stdin.
+
+And now you can hit your breakpoints and start debugging.
+
+-----------------------------------------------------------------------
