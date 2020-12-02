@@ -64,6 +64,11 @@ RUN cat /tmp/append_httpd.conf >> /etc/httpd/conf/httpd.conf && rm /tmp/append_h
 COPY append_supervisord.conf /tmp/append_supervisord.conf
 RUN cat /tmp/append_supervisord.conf >> /etc/supervisor/supervisord.conf && rm /tmp/append_supervisord.conf
 
+
+# Just for convenience when knocking around inside container
+ENV AUTHLIB=/var/www/wsgi/.venv/lib/python3.6/site-packages/authlib
+ENV SSFN=/var/www/wsgi/.venv/lib/python3.6/site-packages/authlib/oauth2/rfc6749
+
 WORKDIR /var/www/wsgi
 RUN . $HOME/.poetry/env \
     # Create virtualenv in /var/www/wsgi/.venv
