@@ -11,7 +11,7 @@ def hello_world():
     return 'Hello, World! I\'m a Flask app!'
 
 
-@app.route('/apache')
+@app.route('/remoteuser')
 def apache():
     # Inspect request context
     print("request:")
@@ -89,14 +89,16 @@ db.create_all()
 
 
 # Fake-register a test client...
-test_client = Client(client_id='test_client')
+# db columns must be args to Client(), and non columns go in metadata.
+test_client = Client(client_id='test_client', client_secret='test_client_secret')
 test_client_metadata = {
         "client_name": "test_client_name",
         "client_uri": "test_client_uri",
-        #"grant_types": blah,
+        "grant_types": "authorization_code",
         "redirect_uris": "test_client_redirect_uri",
         "response_types": "code",
-        #, scope, token_endpoint_auth_method...
+        #, scope,
+        "token_endpoint_auth_method": "client_secret_basic",
 }
 test_client.set_client_metadata(test_client_metadata)
 db.session.add(test_client)
@@ -192,4 +194,8 @@ def authorize():
 
 @app.route('/oauth/token', methods=['POST'])
 def issue_token():
+    """
+    The client should make the request with a Basic auth header and
+    Content-Type: application/x-www-form-urlencoded
+    """
     return server.create_token_response()
