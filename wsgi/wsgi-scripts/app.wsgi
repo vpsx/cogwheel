@@ -6,8 +6,9 @@ from main import app as application
 
 
 
-# FOR ENABLING INTERACTIVE DEBUGGER (Uncomment to enable):
-# Wrap the application in this Debugger class.
+# FOR ENTHUSIASTIC INTERACTIVE DEBUGGER (OPTIONAL; uncomment to enable):
+# This just drops you into the debugger upon every request.
+# You probably want to just leave this commented and add your own bps.
 #class Debugger:
 #
 #    def __init__(self, object):

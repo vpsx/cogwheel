@@ -77,8 +77,6 @@ involved process. See [here](https://modwsgi.readthedocs.io/en/develop/user-guid
 1. In `append_supervisord.conf` uncomment the section "FOR ENABLING INTERACTIVE
    DEBUGGER". If you like you can also uncomment the section "FOR ENABLING
    SUPERVISORCTL", but this is not essential.
-1. In `wsgi/wsgi-scripts/app.wsgi` uncomment the section "FOR ENABLING
-   INTERACTIVE DEBUGGER".
 
 
 Now you can edit the Python code and add your breakpoints. Rebuild and restart
@@ -90,7 +88,10 @@ This is just so that now you have a way to write to stdin.
 
 And now you can hit your breakpoints and start debugging.
 
-OPTIONAL: To use the optional dev dependencies, change `poetry install
---no-dev` in the Dockerfile to just `poetry install`.
+OPTIONAL:
+1. To use the optional dev dependencies, change `poetry install
+   --no-dev` in the Dockerfile to just `poetry install`.
+1. To drop into the debugger on every request, uncomment the section "FOR
+   ENTHUSIASTIC INTERACTIVE DEBUGGER" in `wsgi/wsgi-scripts/app.wsgi`.
 
 -----------------------------------------------------------------------
