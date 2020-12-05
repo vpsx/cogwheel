@@ -90,4 +90,7 @@ This is just so that now you have a way to write to stdin.
 
 And now you can hit your breakpoints and start debugging.
 
+OPTIONAL: To use the optional dev dependencies, change `poetry install
+--no-dev` in the Dockerfile to just `poetry install`.
+
 -----------------------------------------------------------------------

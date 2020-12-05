@@ -13,6 +13,25 @@ SQLAlchemy = "^1.3.20"
 Flask-SQLAlchemy = "^2.4.4"
 
 [tool.poetry.dev-dependencies]
+ipdb = "^0.13.4"
+
+# ipdb is not _really_ a dev dependency in the proper sense,
+# just a nice-to-have dev tool that I don't want to keep manually installing
+# in the container.
+# I wanted to do something like
+#   ipdb = {version = "^0.13.4", optional = true}
+# and then add a Poetry Extras section for devtools:
+#   [tool.poetry.extras]
+#   nicedevtools = ["ipdb"]
+# as modeled in the docs. https://python-poetry.org/docs/pyproject/#extras
+# Then in the Dockerfile during development just tweak the install line to
+#   && poetry install --extras "nicedevtools"
+# However, the Extras situation is a bit funky,
+# and as of 2020-12-04 extras do not work when involving dev-dependencies.
+# (This is not yet documented, though soon to be:
+# https://github.com/python-poetry/poetry/pull/3156 )
+# So, anyway, for now I'm just making it a dev dependency...
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

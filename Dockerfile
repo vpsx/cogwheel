@@ -76,4 +76,5 @@ RUN . $HOME/.poetry/env \
     # If you change this, you should change python-home in the WSGIDaemonProcess directive
     # of the WSGI virtualhost def.
     && poetry config virtualenvs.in-project true \
-    && poetry install
+    # Change this to just "poetry install" if you want to use dev dependencies
+    && poetry install --no-dev
