@@ -200,6 +200,21 @@ server = AuthorizationServer(
 server.register_grant(AuthorizationCodeGrant, [OpenIDCode(require_nonce=False)])
 
 
+# Define custom access token generator fn
+def access_token_generator(client, grant_type, user, scope):
+    """
+    authlib's BearerToken will call this function like this:
+      access_token = self.access_token_generator(client, grant_type, user, scope)
+    whence the function signature.
+    """
+    return "42 ja Bert"
+
+# Authlib's Flask OAuth2 AuthorizationServer will pick up this config on init
+app.config['OAUTH2_ACCESS_TOKEN_GENERATOR'] = access_token_generator
+
+
+
+
 from flask import request, render_template
 #from your_project.auth import current_user
 
