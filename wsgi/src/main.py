@@ -99,7 +99,7 @@ test_client_metadata = {
         "grant_types": "authorization_code",
         "redirect_uris": "test_client_redirect_uri",
         "response_types": "code",
-        #, scope,
+        "scope": "openid user",
         "token_endpoint_auth_method": "client_secret_basic",
 }
 test_client.set_client_metadata(test_client_metadata)
@@ -111,7 +111,10 @@ db.session.commit()
 from authlib.oauth2.rfc6749 import grants
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
+
     def save_authorization_code(self, code, request):
+        # openid request MAY have "nonce" parameter
+        nonce = request.data.get('nonce')
         client = request.client
         auth_code = AuthorizationCode(
             code=code,
@@ -119,6 +122,7 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
             redirect_uri=request.redirect_uri,
             scope=request.scope,
             user_id=request.user.id,
+            nonce=nonce,
         )
         db.session.add(auth_code)
         db.session.commit()
@@ -138,6 +142,48 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
         return User.query.get(authorization_code.user_id)
 
 
+
+from authlib.oidc.core import grants, UserInfo
+
+class OpenIDCode(grants.OpenIDCode):
+    def exists_nonce(self, nonce, request):
+        exists = AuthorizationCode.query.filter_by(
+            client_id=request.client_id, nonce=nonce
+        ).first()
+        return bool(exists)
+
+    def get_jwt_config(self, grant):
+        """Get the JWT configuration for OpenIDCode extension. The JWT
+        configuration will be used to generate ``id_token``.
+        """
+        # Get iss/hostname from WSGI environment, i.e. from Apache VirtualHost config,
+        # to eliminate the need to manually configure the WSGI app with a hostname and
+        # then manually ensure that both config values match
+        iss = request.environ['SERVER_NAME']
+
+        # TODO set up README instructions for private key
+        # Read in private signing key
+        with open(app.config["PRIVATE_KEY_PATH"]) as f:
+            private_key = f.read()
+
+        return {
+            'key': private_key,
+            'alg': 'RS256',
+            'iss': iss,
+            'exp': 3600,
+        }
+
+    def generate_user_info(self, user, scope):
+        # TODO decide where the shib_id should actually go, and in what form;
+        # generally decide what the ID token must look like
+
+        user_info = UserInfo(sub=user.id, shib_id=user.shib_id)
+        #if 'email' in scope:
+        #    user_info['email'] = user.email
+        return user_info
+
+
+
 from authlib.integrations.flask_oauth2 import AuthorizationServer
 from authlib.integrations.sqla_oauth2 import (
     create_query_client_func,
@@ -151,7 +197,7 @@ server = AuthorizationServer(
 )
 
 # register AuthorizationCodeGrant to grant endpoint
-server.register_grant(AuthorizationCodeGrant)
+server.register_grant(AuthorizationCodeGrant, [OpenIDCode(require_nonce=False)])
 
 
 from flask import request, render_template
