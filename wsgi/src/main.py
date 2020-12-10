@@ -5,7 +5,7 @@
 from flask import Flask, request
 app = Flask(__name__)
 
-# TODO add instructions to README
+# Load configuration--default, then custom. Path to latter set in Dockerfile.
 app.config.from_object('default_settings')
 app.config.from_envvar('PATH_TO_APP_CONFIG')
 
@@ -161,7 +161,6 @@ class OpenIDCode(grants.OpenIDCode):
         # then manually ensure that both config values match
         iss = request.environ['SERVER_NAME']
 
-        # TODO set up README instructions for private key
         # Read in private signing key
         with open(app.config["PRIVATE_KEY_PATH"]) as f:
             private_key = f.read()

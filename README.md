@@ -42,6 +42,8 @@ signing and encryption keys/certs with those names.
 As described above, make sure you have saved your SP's signing/encryption certs
 and keys with the correct names in the top level directory.
 
+#### To use InCommon MDS: Download md signing cert
+
 Then, IF your SP is an InCommon SP and you want to use the InCommon Metadata
 Service (if you don't know, assume that the answer is yes):
 
@@ -57,11 +59,43 @@ Service (if you don't know, assume that the answer is yes):
         it links, but the linked docs still list "md.incommon.org"... which is
         supposed to be the legacy service. Anyway, check back in March 2021.)
 
+
+#### Configure httpd VirtualHost
+
 Then, make a copy of `template.ssl.conf` and save it as `ssl.conf`; edit it
-according to the instructions in its header comment.
+according to the instructions in its header comment. (At the moment this merely
+entails supplying a ServerName.)
+
+#### Configure Shibboleth
 
 Make a copy of `template.shibboleth2.xml` and save it as `shibboleth2.xml`;
-edit it according to the instructions in its header comment.
+edit it according to the instructions in its header comment. (At the moment
+this merely entails supplying your SP's EntityID, unless you want to customise
+the Shibboleth behavior.)
+
+#### Configure WSGI/Flask app
+
+You need to supply a database as well as an RSA keypair.
+
+To point to your database:
+1. Open `wsgi_settings.py` and edit the value for `SQLALCHEMY_DATABASE_URI`.
+
+To generate an RSA keypair:
+
+1. Generate private key:
+   `openssl genpkey -algorithm RSA256 -out wsgi/privatekey.pem -outform pem`
+1. Then generate public key:
+   `openssl pkey -in wsgi/privatekey.pem -inform pem -out wsgi/publickey.pem -outform pem -pubout`
+
+You need only make sure to use those filepaths; no further configuration is
+required.
+
+Background info on Flask configuration: The Flask app configuration can be
+edited via `wsgi_settings.py` in the top level directory; this will be copied
+to `wsgi/src/settings.py` in the Docker image. The app will first read in
+default configuration from `wsgi/src/default_settings.py` and then override
+this with config from `wsgi_settings.py`.
+
 
 -----------------------------------------------------------------------
 
