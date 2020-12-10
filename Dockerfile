@@ -69,6 +69,10 @@ RUN cat /tmp/append_supervisord.conf >> /etc/supervisor/supervisord.conf && rm /
 ENV AUTHLIB=/var/www/wsgi/.venv/lib/python3.6/site-packages/authlib
 ENV SSFN=/var/www/wsgi/.venv/lib/python3.6/site-packages/authlib/oauth2/rfc6749
 
+# Set up WSGI application config
+COPY wsgi_settings.py /var/www/wsgi/src/settings.py
+ENV PATH_TO_APP_CONFIG=/var/www/wsgi/src/settings.py
+
 WORKDIR /var/www/wsgi
 RUN . $HOME/.poetry/env \
     # Create virtualenv in /var/www/wsgi/.venv

@@ -5,6 +5,10 @@
 from flask import Flask, request
 app = Flask(__name__)
 
+# TODO add instructions to README
+app.config.from_object('default_settings')
+app.config.from_envvar('PATH_TO_APP_CONFIG')
+
 
 @app.route('/')
 def hello_world():
@@ -28,8 +32,6 @@ def breakpoint():
 
 
 from flask_sqlalchemy import SQLAlchemy
-# SQLite and in-memory for now...
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 db = SQLAlchemy(app)
 
 

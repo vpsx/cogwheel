@@ -1,0 +1,3 @@
+DEBUG = False
+# SQLite and in-memory for now...
+SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
