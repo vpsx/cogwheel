@@ -19,13 +19,15 @@ the steps for which are detailed below.)
 
 ## Prerequisites
 
+#### Register an InCommon Service Provider
+
 If you are going to use this for InCommon integration you will first need
 to register an InCommon Service Provider that you will use.
 
 - [InCommon Federation Manager](https://spaces.at.internet2.edu/display/federation/Federation+Manager)
 - [InCommon docs: Add a service provider](https://spaces.at.internet2.edu/display/federation/federation-manager-add-sp)
 
-Signing and encryption certificates and keys
+Signing and encryption certificates and keys for the SP
 should be generated according to [these instructions](https://spaces.at.internet2.edu/display/federation/Key+Generation).
 You can use the same set for both signing and encryption.
 Save these in the top level directory with the following names:
@@ -34,6 +36,14 @@ Save these in the top level directory with the following names:
 
 If you are setting up something other than InCommon, still save the SP's
 signing and encryption keys/certs with those names.
+
+#### Obtain a TLS/SSL certificate for your domain name
+
+Save the cert and key in the top level directory with the names `ssl_cert.pem`
+and `ssl_key.pem`.
+
+To make a self-signed certificate for testing:
+`openssl req -x509 -newkey rsa -nodes -out ssl_cert.pem -keyout ssl_key.pem`
 
 -----------------------------------------------------------------------
 

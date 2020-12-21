@@ -2,6 +2,10 @@
 # Based on CentOS 7
 FROM tier/shibboleth_sp:3.1.0_04172020
 
+## Provide SSL certificate and key
+COPY ssl_cert.pem /etc/pki/tls/certs/localhost.crt
+COPY ssl_key.pem /etc/pki/tls/private/localhost.key
+
 # Provide the SP's private keys and certificates.
 # Must match the keys and certs of the SP registered with InCommon.
 # May use the same key/cert pair for signing and encryption.

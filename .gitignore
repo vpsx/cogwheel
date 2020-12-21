@@ -5,5 +5,7 @@ sp-encrypt-cert.pem
 sp-encrypt-key.pem
 sp-signing-cert.pem
 sp-signing-key.pem
+ssl_cert.pem
+ssl_key.pem
 wsgi/privatekey.pem
 wsgi/publickey.pem
