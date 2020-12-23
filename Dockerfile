@@ -69,10 +69,6 @@ COPY append_supervisord.conf /tmp/append_supervisord.conf
 RUN cat /tmp/append_supervisord.conf >> /etc/supervisor/supervisord.conf && rm /tmp/append_supervisord.conf
 
 
-# Just for convenience when knocking around inside container
-ENV AUTHLIB=/var/www/wsgi/.venv/lib/python3.6/site-packages/authlib
-ENV SSFN=/var/www/wsgi/.venv/lib/python3.6/site-packages/authlib/oauth2/rfc6749
-
 # Set up WSGI application config
 COPY wsgi_settings.py /var/www/wsgi/src/settings.py
 ENV PATH_TO_APP_CONFIG=/var/www/wsgi/src/settings.py
@@ -86,3 +82,7 @@ RUN . $HOME/.poetry/env \
     && poetry config virtualenvs.in-project true \
     # Change this to just "poetry install" if you want to use dev dependencies
     && poetry install --no-dev
+
+
+# Just for convenience when knocking around inside container
+ENV PKGS=/var/www/wsgi/.venv/lib/python3.6/site-packages/
