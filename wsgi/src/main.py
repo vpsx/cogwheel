@@ -92,12 +92,12 @@ db.create_all()
 
 # Fake-register a test client...
 # db columns must be args to Client(), and non columns go in metadata.
-test_client = Client(client_id='test_client', client_secret='test_client_secret')
+test_client = Client(client_id='test_client_id', client_secret='test_client_secret')
 test_client_metadata = {
         "client_name": "test_client_name",
         "client_uri": "test_client_uri",
         "grant_types": "authorization_code",
-        "redirect_uris": "test_client_redirect_uri",
+        "redirect_uris": "http://localhost:8080/user/login/fence/login",
         "response_types": "code",
         "scope": "openid user",
         "token_endpoint_auth_method": "client_secret_basic",
@@ -246,3 +246,7 @@ def issue_token():
     Content-Type: application/x-www-form-urlencoded
     """
     return server.create_token_response()
+
+@app.route('/.well-known/oauth-authorization-server')
+def well_known():
+    return server.metadata

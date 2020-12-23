@@ -107,6 +107,9 @@ default configuration from `wsgi/src/default_settings.py` and then override
 this with config from `wsgi_settings.py`.
 
 
+**TODO** Add section on server metadata or automate
+
+
 -----------------------------------------------------------------------
 
 ## Interactive debugging
