@@ -9,3 +9,4 @@ ssl_cert.pem
 ssl_key.pem
 wsgi/privatekey.pem
 wsgi/publickey.pem
+oauth2_metadata.json

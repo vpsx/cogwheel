@@ -106,8 +106,14 @@ to `wsgi/src/settings.py` in the Docker image. The app will first read in
 default configuration from `wsgi/src/default_settings.py` and then override
 this with config from `wsgi_settings.py`.
 
+#### OAuth2/OIDC Server Metadata
 
-**TODO** Add section on server metadata or automate
+Make a copy of `template.oauth2_metadata.json` and name it
+`oauth2_metadata.json`. Edit the hostnames in the URLs (they should match the
+ServerName entered earlier in `httpd.conf`). The contents of this file
+constitute the OIDC server metadata per RFC 8414 and will be served at
+`/.well-known/oauth-authorization-server`. For more information and a list of
+metadata values see [here](https://tools.ietf.org/html/rfc8414#section-2).
 
 
 -----------------------------------------------------------------------
