@@ -9,8 +9,31 @@ found [here](https://github.internet2.edu/docker/shib-sp/tree/3.1.0_04172020).
 
 ## Reference
 
-Build: `docker build -t cixiri .`
-Run: `docker run --name cixiri -p 1233:80 -p 1234:443 cixiri`
+Build:
+```
+docker build -t cixiri .
+```
+Run:
+```
+docker run \
+--name cixiri \
+--publish 1233:80 --publish 1234:443 \
+--mount type=bind,source="$(pwd)"/ssl_cert.pem,target=/etc/pki/tls/certs/localhost.crt \
+--mount type=bind,source="$(pwd)"/ssl_key.pem,target=/etc/pki/tls/private/localhost.key \
+--mount type=bind,source="$(pwd)"/sp-encrypt-cert.pem,target=/etc/shibboleth/sp-encrypt-cert.pem \
+--mount type=bind,source="$(pwd)"/sp-encrypt-key.pem,target=/etc/shibboleth/sp-encrypt-key.pem \
+--mount type=bind,source="$(pwd)"/sp-signing-cert.pem,target=/etc/shibboleth/sp-signing-cert.pem \
+--mount type=bind,source="$(pwd)"/sp-signing-key.pem,target=/etc/shibboleth/sp-signing-key.pem \
+--mount type=bind,source="$(pwd)"/mdqsigner.pem,target=/etc/shibboleth/mdqsigner.pem \
+--mount type=bind,source="$(pwd)"/shibboleth2.xml,target=/etc/shibboleth/shibboleth2.xml \
+--mount type=bind,source="$(pwd)"/ssl.conf,target=/etc/httpd/conf.d/ssl.conf \
+--mount type=bind,source="$(pwd)"/wsgi_settings.py,target=/etc/cixiri/wsgi_settings.py \
+--mount type=bind,source="$(pwd)"/oauth2_metadata.json,target=/etc/cixiri/oauth2_metadata.json \
+cixiri
+```
+
+The Dockerfile contains a comment very briefly describing each mounted file;
+otherwise see below for details on each file.
 
 (Note: You can't build or run this before you have completed setup/config,
 the steps for which are detailed below.)
@@ -27,10 +50,11 @@ to register an InCommon Service Provider that you will use.
 - [InCommon Federation Manager](https://spaces.at.internet2.edu/display/federation/Federation+Manager)
 - [InCommon docs: Add a service provider](https://spaces.at.internet2.edu/display/federation/federation-manager-add-sp)
 
-Signing and encryption certificates and keys for the SP
-should be generated according to [these instructions](https://spaces.at.internet2.edu/display/federation/Key+Generation).
+The SP registration form will require that you provide
+signing and encryption certificates and keys for the SP.
+These should be generated according to [these instructions](https://spaces.at.internet2.edu/display/federation/Key+Generation).
 You can use the same set for both signing and encryption.
-Save these in the top level directory with the following names:
+Save the certs and keys in the top level directory with the following names:
 `sp-encrypt-cert.pem`, `sp-encrypt-key.pem`, `sp-signing-cert.pem`,
 `sp-signing-key.pem`.
 
@@ -57,7 +81,7 @@ and keys with the correct names in the top level directory.
 Then, IF your SP is an InCommon SP and you want to use the InCommon Metadata
 Service (if you don't know, assume that the answer is yes):
 
-- Download the InCommon medatada signing certificate and save it as mdqsigner.pem:
+- Download the InCommon metadata signing certificate and save it as mdqsigner.pem:
   `curl https://md.incommon.org/certs/inc-md-cert-mdq.pem > mdqsigner.pem`
 - Check the fingerprints:
   `cat mdqsigner.pem | openssl x509 -sha1 -noout -fingerprint`
@@ -101,8 +125,8 @@ You need only make sure to use those filepaths; no further configuration is
 required.
 
 Background info on Flask configuration: The Flask app configuration can be
-edited via `wsgi_settings.py` in the top level directory; this will be copied
-to `wsgi/src/settings.py` in the Docker image. The app will first read in
+edited via `wsgi_settings.py` in the top level directory; this will be mounted
+to `/etc/cixiri/wsgi_settings.py` in the Docker image. The app will first read in
 default configuration from `wsgi/src/default_settings.py` and then override
 this with config from `wsgi_settings.py`.
 

@@ -2,29 +2,27 @@
 # Based on CentOS 7
 FROM tier/shibboleth_sp:3.1.0_04172020
 
-## Provide SSL certificate and key
-COPY ssl_cert.pem /etc/pki/tls/certs/localhost.crt
-COPY ssl_key.pem /etc/pki/tls/private/localhost.key
-
-# Provide the SP's private keys and certificates.
-# Must match the keys and certs of the SP registered with InCommon.
-# May use the same key/cert pair for signing and encryption.
-COPY sp-encrypt-cert.pem /etc/shibboleth/sp-encrypt-cert.pem
-COPY sp-encrypt-key.pem  /etc/shibboleth/sp-encrypt-key.pem
-COPY sp-signing-cert.pem /etc/shibboleth/sp-signing-cert.pem
-COPY sp-signing-key.pem  /etc/shibboleth/sp-signing-key.pem
-
-# Provide the InCommon metadata signing certificate.
-# See comments in template.shibboleth2.xml for instructions.
-COPY mdqsigner.pem /etc/shibboleth/mdqsigner.pem
-
-# Provide shibboleth configuration.
-COPY shibboleth2.xml /etc/shibboleth/shibboleth2.xml
-
-# Provide SSL configuration.
-COPY ssl.conf /etc/httpd/conf.d/ssl.conf
-
-
+# The image built from this file will expect the following
+# bind mounts in the following target locations:
+#
+# TLS/SSL certificate and key:
+#   /etc/pki/tls/certs/localhost.crt
+#   /etc/pki/tls/private/localhost.key
+# InCommon SP's signing/encryption keys and certificates:
+#   /etc/shibboleth/sp-encrypt-cert.pem
+#   /etc/shibboleth/sp-encrypt-key.pem
+#   /etc/shibboleth/sp-signing-cert.pem
+#   /etc/shibboleth/sp-signing-key.pem
+# InCommon metadata signing certificate:
+#   /etc/shibboleth/mdqsigner.pem
+# Shibboleth configuration:
+#   /etc/shibboleth/shibboleth2.xml
+# SSL/httpd configuration:
+#   /etc/httpd/conf.d/ssl.conf
+# WSGI application config:
+#   /etc/cixiri/wsgi_settings.py
+# OAuth2 server metadata:
+#   /etc/cixiri/oauth2_metadata.json
 
 # ---------------------------------------------------------------
 
@@ -69,11 +67,9 @@ COPY append_supervisord.conf /tmp/append_supervisord.conf
 RUN cat /tmp/append_supervisord.conf >> /etc/supervisor/supervisord.conf && rm /tmp/append_supervisord.conf
 
 
-# Set up WSGI application config and OAuth2 server metadata
+# Set up directory for WSGI application config and OAuth2 server metadata
 RUN mkdir /etc/cixiri
-COPY wsgi_settings.py /etc/cixiri/wsgi_settings.py
 ENV PATH_TO_APP_CONFIG=/etc/cixiri/wsgi_settings.py
-COPY oauth2_metadata.json /etc/cixiri/oauth2_metadata.json
 
 WORKDIR /var/www/wsgi
 RUN . $HOME/.poetry/env \
