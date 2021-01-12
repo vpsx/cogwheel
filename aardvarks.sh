@@ -16,6 +16,8 @@ run () {
     --mount type=bind,source="$(pwd)"/ssl.conf,target=/etc/httpd/conf.d/ssl.conf \
     --mount type=bind,source="$(pwd)"/wsgi_settings.py,target=/etc/cixiri/wsgi_settings.py \
     --mount type=bind,source="$(pwd)"/oauth2_metadata.json,target=/etc/cixiri/oauth2_metadata.json \
+    --mount type=bind,source="$(pwd)"/rsa_privatekey.pem,target=/etc/cixiri/rsa/privatekey.pem \
+    --mount type=bind,source="$(pwd)"/rsa_publickey.pem,target=/etc/cixiri/rsa/publickey.pem \
     cixiri
 }
 cycle () {

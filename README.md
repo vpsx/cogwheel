@@ -29,6 +29,8 @@ docker run \
 --mount type=bind,source="$(pwd)"/ssl.conf,target=/etc/httpd/conf.d/ssl.conf \
 --mount type=bind,source="$(pwd)"/wsgi_settings.py,target=/etc/cixiri/wsgi_settings.py \
 --mount type=bind,source="$(pwd)"/oauth2_metadata.json,target=/etc/cixiri/oauth2_metadata.json \
+--mount type=bind,source="$(pwd)"/rsa_privatekey.pem,target=/etc/cixiri/rsa/privatekey.pem \
+--mount type=bind,source="$(pwd)"/rsa_publickey.pem,target=/etc/cixiri/rsa/publickey.pem \
 cixiri
 ```
 
@@ -117,12 +119,10 @@ To point to your database:
 To generate an RSA keypair:
 
 1. Generate private key:
-   `openssl genpkey -algorithm RSA256 -out wsgi/privatekey.pem -outform pem`
+   `openssl genpkey -algorithm RSA256 -out rsa_privatekey.pem -outform pem`
 1. Then generate public key:
-   `openssl pkey -in wsgi/privatekey.pem -inform pem -out wsgi/publickey.pem -outform pem -pubout`
+   `openssl pkey -in wsgi/privatekey.pem -inform pem -out rsa_publickey.pem -outform pem -pubout`
 
-You need only make sure to use those filepaths; no further configuration is
-required.
 
 Background info on Flask configuration: The Flask app configuration can be
 edited via `wsgi_settings.py` in the top level directory; this will be mounted

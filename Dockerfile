@@ -23,6 +23,9 @@ FROM tier/shibboleth_sp:3.1.0_04172020
 #   /etc/cixiri/wsgi_settings.py
 # OAuth2 server metadata:
 #   /etc/cixiri/oauth2_metadata.json
+# RSA keypair for JWTs:
+#   /etc/cixiri/rsa/privatekey.pem
+#   /etc/cixiri/rsa/publickey.pem
 
 # ---------------------------------------------------------------
 
