@@ -7,7 +7,7 @@ PRIVATE_KEY_PATH = '/var/www/wsgi/privatekey.pem'
 DEBUG = False
 
 # OIDC server metadata for .well-known/oauth-authorization-server
-OAUTH2_METADATA_FILE = '/var/www/wsgi/oauth2_metadata.json'
+OAUTH2_METADATA_FILE = '/etc/cixiri/oauth2_metadata.json'
 
 # Disabled by default; setting here to silence warning
 SQLALCHEMY_TRACK_MODIFICATIONS = False

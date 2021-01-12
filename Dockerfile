@@ -70,9 +70,10 @@ RUN cat /tmp/append_supervisord.conf >> /etc/supervisor/supervisord.conf && rm /
 
 
 # Set up WSGI application config and OAuth2 server metadata
-COPY wsgi_settings.py /var/www/wsgi/src/settings.py
-ENV PATH_TO_APP_CONFIG=/var/www/wsgi/src/settings.py
-COPY oauth2_metadata.json /var/www/wsgi/oauth2_metadata.json
+RUN mkdir /etc/cixiri
+COPY wsgi_settings.py /etc/cixiri/wsgi_settings.py
+ENV PATH_TO_APP_CONFIG=/etc/cixiri/wsgi_settings.py
+COPY oauth2_metadata.json /etc/cixiri/oauth2_metadata.json
 
 WORKDIR /var/www/wsgi
 RUN . $HOME/.poetry/env \
