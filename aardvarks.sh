@@ -1,9 +1,9 @@
 build () {
-    docker build -t cixiri .
+    docker build -t cogwheel .
 }
 run () {
     docker run \
-    --name cixiri \
+    --name cogwheel \
     --publish 1233:80 --publish 1234:443 \
     --mount type=bind,source="$(pwd)"/ssl_cert.pem,target=/etc/pki/tls/certs/localhost.crt \
     --mount type=bind,source="$(pwd)"/ssl_key.pem,target=/etc/pki/tls/private/localhost.key \
@@ -14,24 +14,24 @@ run () {
     --mount type=bind,source="$(pwd)"/mdqsigner.pem,target=/etc/shibboleth/mdqsigner.pem \
     --mount type=bind,source="$(pwd)"/shibboleth2.xml,target=/etc/shibboleth/shibboleth2.xml \
     --mount type=bind,source="$(pwd)"/ssl.conf,target=/etc/httpd/conf.d/ssl.conf \
-    --mount type=bind,source="$(pwd)"/wsgi_settings.py,target=/etc/cixiri/wsgi_settings.py \
-    --mount type=bind,source="$(pwd)"/oauth2_metadata.json,target=/etc/cixiri/oauth2_metadata.json \
-    --mount type=bind,source="$(pwd)"/rsa_privatekey.pem,target=/etc/cixiri/rsa/privatekey.pem \
-    --mount type=bind,source="$(pwd)"/rsa_publickey.pem,target=/etc/cixiri/rsa/publickey.pem \
-    cixiri
+    --mount type=bind,source="$(pwd)"/wsgi_settings.py,target=/etc/cogwheel/wsgi_settings.py \
+    --mount type=bind,source="$(pwd)"/oauth2_metadata.json,target=/etc/cogwheel/oauth2_metadata.json \
+    --mount type=bind,source="$(pwd)"/rsa_privatekey.pem,target=/etc/cogwheel/rsa/privatekey.pem \
+    --mount type=bind,source="$(pwd)"/rsa_publickey.pem,target=/etc/cogwheel/rsa/publickey.pem \
+    cogwheel
 }
 cycle () {
-    docker kill cixiri
-    docker rm cixiri
-    docker build -t cixiri .
+    docker kill cogwheel
+    docker rm cogwheel
+    docker build -t cogwheel .
     run
 }
 logs () {
-    docker logs cixiri
+    docker logs cogwheel
 }
 shell () {
-    docker exec -it cixiri bash
+    docker exec -it cogwheel bash
 }
 poke () {
-    docker exec -w /var/www/wsgi/wsgi-scripts cixiri touch app.wsgi
+    docker exec -w /var/www/wsgi/wsgi-scripts cogwheel touch app.wsgi
 }

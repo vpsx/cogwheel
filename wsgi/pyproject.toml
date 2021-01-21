@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "cixiri"
+name = "cogwheel"
 version = "0.1.0"
 description = ""
 authors = ["vpsx <19900057+vpsx@users.noreply.github.com>"]

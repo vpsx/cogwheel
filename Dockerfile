@@ -20,12 +20,12 @@ FROM tier/shibboleth_sp:3.1.0_04172020
 # SSL/httpd configuration:
 #   /etc/httpd/conf.d/ssl.conf
 # WSGI application config:
-#   /etc/cixiri/wsgi_settings.py
+#   /etc/cogwheel/wsgi_settings.py
 # OAuth2 server metadata:
-#   /etc/cixiri/oauth2_metadata.json
+#   /etc/cogwheel/oauth2_metadata.json
 # RSA keypair for JWTs:
-#   /etc/cixiri/rsa/privatekey.pem
-#   /etc/cixiri/rsa/publickey.pem
+#   /etc/cogwheel/rsa/privatekey.pem
+#   /etc/cogwheel/rsa/publickey.pem
 
 # ---------------------------------------------------------------
 
@@ -71,8 +71,8 @@ RUN cat /tmp/append_supervisord.conf >> /etc/supervisor/supervisord.conf && rm /
 
 
 # Set up directory for WSGI application config and OAuth2 server metadata
-RUN mkdir /etc/cixiri
-ENV PATH_TO_APP_CONFIG=/etc/cixiri/wsgi_settings.py
+RUN mkdir /etc/cogwheel
+ENV PATH_TO_APP_CONFIG=/etc/cogwheel/wsgi_settings.py
 
 WORKDIR /var/www/wsgi
 RUN . $HOME/.poetry/env \

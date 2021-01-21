@@ -1,4 +1,4 @@
-# Cixiri
+# Cogwheel
 
 SAML SP and OIDC IdP on Apache.
 
@@ -11,12 +11,12 @@ found [here](https://github.internet2.edu/docker/shib-sp/tree/3.1.0_04172020).
 
 Build:
 ```
-docker build -t cixiri .
+docker build -t cogwheel .
 ```
 Run:
 ```
 docker run \
---name cixiri \
+--name cogwheel \
 --publish 1233:80 --publish 1234:443 \
 --mount type=bind,source="$(pwd)"/ssl_cert.pem,target=/etc/pki/tls/certs/localhost.crt \
 --mount type=bind,source="$(pwd)"/ssl_key.pem,target=/etc/pki/tls/private/localhost.key \
@@ -27,11 +27,11 @@ docker run \
 --mount type=bind,source="$(pwd)"/mdqsigner.pem,target=/etc/shibboleth/mdqsigner.pem \
 --mount type=bind,source="$(pwd)"/shibboleth2.xml,target=/etc/shibboleth/shibboleth2.xml \
 --mount type=bind,source="$(pwd)"/ssl.conf,target=/etc/httpd/conf.d/ssl.conf \
---mount type=bind,source="$(pwd)"/wsgi_settings.py,target=/etc/cixiri/wsgi_settings.py \
---mount type=bind,source="$(pwd)"/oauth2_metadata.json,target=/etc/cixiri/oauth2_metadata.json \
---mount type=bind,source="$(pwd)"/rsa_privatekey.pem,target=/etc/cixiri/rsa/privatekey.pem \
---mount type=bind,source="$(pwd)"/rsa_publickey.pem,target=/etc/cixiri/rsa/publickey.pem \
-cixiri
+--mount type=bind,source="$(pwd)"/wsgi_settings.py,target=/etc/cogwheel/wsgi_settings.py \
+--mount type=bind,source="$(pwd)"/oauth2_metadata.json,target=/etc/cogwheel/oauth2_metadata.json \
+--mount type=bind,source="$(pwd)"/rsa_privatekey.pem,target=/etc/cogwheel/rsa/privatekey.pem \
+--mount type=bind,source="$(pwd)"/rsa_publickey.pem,target=/etc/cogwheel/rsa/publickey.pem \
+cogwheel
 ```
 
 The Dockerfile contains a comment very briefly describing each mounted file;
@@ -126,7 +126,7 @@ To generate an RSA keypair:
 
 Background info on Flask configuration: The Flask app configuration can be
 edited via `wsgi_settings.py` in the top level directory; this will be mounted
-to `/etc/cixiri/wsgi_settings.py` in the Docker image. The app will first read in
+to `/etc/cogwheel/wsgi_settings.py` in the Docker image. The app will first read in
 default configuration from `wsgi/src/default_settings.py` and then override
 this with config from `wsgi_settings.py`.
 
