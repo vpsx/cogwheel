@@ -3,11 +3,16 @@
 # https://wiki.shibboleth.net/confluence/display/SP3/AttributeAccess#AttributeAccess-REMOTE_USER
 
 from flask import Flask, request
+from models import db
+
 app = Flask(__name__)
 
 # Load configuration--default, then custom. Path to latter set in Dockerfile.
 app.config.from_object('default_settings')
 app.config.from_envvar('PATH_TO_APP_CONFIG')
+
+# Configure app to work with SQLAlchemy
+db.init_app(app)
 
 
 @app.route('/')
@@ -31,8 +36,6 @@ def breakpoint():
     return "Debugger weeee"
 
 
-from flask_sqlalchemy import SQLAlchemy
-db = SQLAlchemy(app)
 
 
 class User(db.Model):
@@ -87,25 +90,10 @@ class AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
 
 
 # Make dem tables
-db.create_all()
+# SQLAlchemy object not bound to app, so pass in app as arg.
+# Alternatively could push an app context.
+db.create_all(app=app)
 
-
-# Fake-register a test client...
-# db columns must be args to Client(), and non columns go in metadata.
-test_client = Client(client_id='test_client_id', client_secret='test_client_secret')
-test_client_metadata = {
-        "client_name": "test_client_name",
-        "client_uri": "test_client_uri",
-        "grant_types": "authorization_code",
-        "redirect_uris": "http://localhost:8080/user/login/fence/login",
-        "response_types": "code",
-        "scope": "openid user",
-        "token_endpoint_auth_method": "client_secret_basic",
-}
-test_client.set_client_metadata(test_client_metadata)
-db.session.add(test_client)
-db.session.commit()
-# Done registering test client.
 
 
 from authlib.oauth2.rfc6749 import grants
