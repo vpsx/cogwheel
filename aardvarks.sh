@@ -35,3 +35,7 @@ shell () {
 poke () {
     docker exec -w /var/www/wsgi/wsgi-scripts cogwheel touch app.wsgi
 }
+clientreg () {
+    # Healthy amount of preamble
+    docker exec cogwheel poetry run python3 src/register_client.py "$@"
+}

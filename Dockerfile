@@ -75,15 +75,22 @@ RUN mkdir /etc/cogwheel
 ENV PATH_TO_APP_CONFIG=/etc/cogwheel/wsgi_settings.py
 
 WORKDIR /var/www/wsgi
-RUN . $HOME/.poetry/env \
-    # Create virtualenv in /var/www/wsgi/.venv
-    # It's not important where the venv is; this just makes it explicit and obvious.
-    # If you change this, you should change python-home in the WSGIDaemonProcess directive
-    # of the WSGI virtualhost def.
-    && poetry config virtualenvs.in-project true \
+
+# Equivalent to . $HOME/.poetry/env
+# This way poetry is always in PATH, enabling e.g. docker exec poetry run blah.py
+ENV PATH=/root/.poetry/bin:$PATH
+
+# Create virtualenv in /var/www/wsgi/.venv
+# (It's not important where the venv is; this just makes it explicit and obvious.)
+# If you change this, you should change python-home in the WSGIDaemonProcess directive
+# of the WSGI virtualhost def.
+RUN poetry config virtualenvs.in-project true \
     # Change this to just "poetry install" if you want to use dev dependencies
     && poetry install --no-dev
 
+# Export Unicode locale so that register_client.py can be invoked via docker exec.
+# See: https://click.palletsprojects.com/en/7.x/python3/#python-3-surrogate-handling
+ENV LC_ALL=en_US.utf8
 
 # Just for convenience when knocking around inside container
 ENV PKGS=/var/www/wsgi/.venv/lib/python3.6/site-packages/
