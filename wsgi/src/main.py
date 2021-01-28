@@ -187,3 +187,14 @@ def issue_token():
 @app.route('/.well-known/oauth-authorization-server')
 def well_known():
     return server.metadata
+
+
+from authlib.jose import JsonWebKey, KeySet
+
+@app.route('/jwks.json')
+def jwks():
+    with open(app.config["PUBLIC_KEY_PATH"]) as f:
+        public_key_data = f.read()
+    public_key = JsonWebKey.import_key(public_key_data, {"kty": "RSA"})
+    keyset = KeySet([public_key])
+    return keyset.as_json()

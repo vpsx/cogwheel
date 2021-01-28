@@ -2,6 +2,7 @@
 SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
 
 PRIVATE_KEY_PATH = '/etc/cogwheel/rsa/privatekey.pem'
+PUBLIC_KEY_PATH = '/etc/cogwheel/rsa/publickey.pem'
 
 
 DEBUG = False
