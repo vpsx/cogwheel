@@ -11,16 +11,15 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    # other columns
 
-    # TODO:
-    # Example REMOTE_USER from mod_shib:
+    # OTHER COLUMNS:
+    # At the moment UChicago IdP is not returning the SAML Attributes
+    # that my SP is requesting (mail, eduPersonPrincipalName, ...)
+    # and I have no other InCommon credentials (for another IdP) to test with. :(
+    # In future perhaps add more columns here for different SAML Attributes.
+
+    # This will be the persistent-id which mod_shib puts into REMOTE_USER. Example:
     # urn:mace:incommon:uchicago.edu!https://zlc.planx-pla.net/sp!ABCdef123456SAMLuseridstring=
-    # Need to think about what columns to put in this table.
-    # It will depend, probably, on what I need to put in the id_token ultimately.
-    # For now, let's just stick the entire REMOTE_USER string into one column.
-    # By the way, how do we get user attributes from the SAML assertion from here (here = the WSGI app)?
-    # You will need those in order to get e.g. a sensible value for username.
     shib_id = db.Column(db.String)
 
     def get_user_id(self):

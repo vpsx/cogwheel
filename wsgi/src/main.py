@@ -110,12 +110,18 @@ class OpenIDCode(grants.OpenIDCode):
         }
 
     def generate_user_info(self, user, scope):
-        # TODO decide where the shib_id should actually go, and in what form;
-        # generally decide what the ID token must look like
+        # The "sub" claim should either be unique issuer-wide or
+        # globally unique, and it should be a StringOrURI.
+        # Technically a stringified user.id would be issuer-unique,
+        # but I think it is more sensible to just use user.shib_id.
+        # Will still also publish "shib_id" field.
 
-        user_info = UserInfo(sub=user.id, shib_id=user.shib_id)
+        user_info = UserInfo(sub=user.shib_id, shib_id=user.shib_id)
+
+        # Add this when can get the "mail" SAML Attribute!
         #if 'email' in scope:
         #    user_info['email'] = user.email
+
         return user_info
 
 
@@ -137,7 +143,6 @@ server.register_grant(AuthorizationCodeGrant, [OpenIDCode(require_nonce=False)])
 
 
 from flask import request, render_template
-#from your_project.auth import current_user
 
 def get_or_create_shib_user():
     if request.remote_user:
