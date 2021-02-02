@@ -1,22 +1,24 @@
-<p>The application <strong>{{grant.client.client_name}}</strong> is requesting:
+<p>The application <strong>{{grant.client.client_name}}</strong> is requesting the scopes:
 <strong>{{ grant.request.scope }}</strong>
 </p>
 
+{% if not user %}
+<p>Something went wrong: No user found--login didn't work...</p>
+{% endif %}
+
+{% if user and user.shib_id %}
+<!--TODO: Use a nicer attribute like email or display name, if those attrs available-->
 <p>
-  from You - a.k.a. <strong>{{ user.username }}</strong>
+  from <strong>{{ user.shib_id }}</strong>
 </p>
+{% endif %}
+
 
 <form action="" method="post">
   <label>
     <input type="checkbox" name="confirm">
     <span>Consent?</span>
   </label>
-  {% if not user %}
-  <p>You haven't logged in. Log in with:</p>
-  <div>
-    <input type="text" name="username">
-  </div>
-  {% endif %}
   <br>
   <button>Submit</button>
 </form>
