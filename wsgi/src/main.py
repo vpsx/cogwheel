@@ -19,32 +19,6 @@ db.init_app(app)
 db.create_all(app=app)
 
 
-
-
-@app.route('/')
-def hello_world():
-    return 'Hello, World! I\'m a Flask app!'
-
-
-@app.route('/remoteuser')
-def apache():
-    # Inspect request context
-    print("request:")
-    print(request)
-    print(dir(request))
-    print(request.remote_user)
-    return "REMOTE_USER is..... " + request.remote_user
-
-
-@app.route('/breakpoint')
-def breakpoint():
-    import pdb; pdb.set_trace()
-    return "Debugger weeee"
-
-
-
-
-
 from authlib.oauth2.rfc6749 import grants
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
