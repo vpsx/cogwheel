@@ -1,7 +1,3 @@
-# Docs on how Shibboleth info is passed from server to application:
-# https://wiki.shibboleth.net/confluence/display/SP3/ApplicationIntegration
-# https://wiki.shibboleth.net/confluence/display/SP3/AttributeAccess#AttributeAccess-REMOTE_USER
-
 from authlib.integrations.flask_oauth2 import AuthorizationServer
 from authlib.integrations.sqla_oauth2 import (
     create_query_client_func,
@@ -55,10 +51,6 @@ def get_or_create_shib_user():
 
 @app.route('/oauth/authorize', methods=['GET', 'POST'])
 def authorize():
-    # Login is required since we need to know the current resource owner.
-    # It can be done with a redirection to the login page, or a login
-    # form on this authorization page.
-
     current_user = get_or_create_shib_user()
 
     if request.method == 'GET':

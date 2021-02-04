@@ -1,3 +1,3 @@
 DEBUG = False
-# SQLite and in-memory for now...
+# Point at your database
 SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
