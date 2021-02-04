@@ -2,10 +2,17 @@
 # https://wiki.shibboleth.net/confluence/display/SP3/ApplicationIntegration
 # https://wiki.shibboleth.net/confluence/display/SP3/AttributeAccess#AttributeAccess-REMOTE_USER
 
-from flask import Flask, request
+from authlib.integrations.flask_oauth2 import AuthorizationServer
+from authlib.integrations.sqla_oauth2 import (
+    create_query_client_func,
+    create_save_token_func
+)
+from authlib.jose import JsonWebKey, KeySet
+from flask import Flask, request, render_template
 
 from models import db, AuthorizationCode, Client, Token, User
 from auth import AuthorizationCodeGrant, OpenIDCode
+
 
 app = Flask(__name__)
 
@@ -21,11 +28,6 @@ db.init_app(app)
 db.create_all(app=app)
 
 
-from authlib.integrations.flask_oauth2 import AuthorizationServer
-from authlib.integrations.sqla_oauth2 import (
-    create_query_client_func,
-    create_save_token_func
-)
 query_client = create_query_client_func(db.session, Client)
 save_token = create_save_token_func(db.session, Token)
 
@@ -36,8 +38,6 @@ server = AuthorizationServer(
 # register AuthorizationCodeGrant to grant endpoint
 server.register_grant(AuthorizationCodeGrant, [OpenIDCode(require_nonce=False)])
 
-
-from flask import request, render_template
 
 def get_or_create_shib_user():
     if request.remote_user:
@@ -84,12 +84,11 @@ def issue_token():
     """
     return server.create_token_response()
 
+
 @app.route('/.well-known/oauth-authorization-server')
 def well_known():
     return server.metadata
 
-
-from authlib.jose import JsonWebKey, KeySet
 
 @app.route('/jwks.json')
 def jwks():
