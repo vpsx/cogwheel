@@ -91,6 +91,3 @@ RUN poetry config virtualenvs.in-project true \
 # Export Unicode locale so that register_client.py can be invoked via docker exec.
 # See: https://click.palletsprojects.com/en/7.x/python3/#python-3-surrogate-handling
 ENV LC_ALL=en_US.utf8
-
-# Just for convenience when knocking around inside container
-ENV PKGS=/var/www/wsgi/.venv/lib/python3.6/site-packages/
