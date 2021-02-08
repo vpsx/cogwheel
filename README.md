@@ -1,6 +1,7 @@
 # Cogwheel
 
-SAML SP and OIDC IdP on Apache.
+SAML SP and OIDC IdP implemented with Apache httpd, Shibboleth SP3, and
+Authlib. Authenticate with a SAML IdP or federation using OIDC.
 
 The implementation extends the InCommon TIER Shibboleth SP docker base image,
 found [here](https://github.internet2.edu/docker/shib-sp/tree/3.1.0_04172020).
